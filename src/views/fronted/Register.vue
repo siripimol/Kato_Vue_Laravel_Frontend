@@ -88,9 +88,9 @@ export default {
         lname: "",
         phone: "",
         email: "",
-        day: "",
-        month: "",
-        year: "",
+        // day: "",
+        // month: "",
+        // year: "",
       },
     };
   },
