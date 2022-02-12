@@ -1,5 +1,5 @@
 const { default: Axios } = require("axios");
 
-Axios.defaults.baseURL = "http://localhost:8000/api";
+Axios.defaults.baseURL = "https://app-name-backend-kato.herokuapp.com/api";
 
 export default Axios;
