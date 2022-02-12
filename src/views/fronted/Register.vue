@@ -3,7 +3,8 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-col align="center" justify="center">
-          <h1 class="green--text">ลงทะเบียนกิจกรรม 5555 </h1>
+          <h1 class="green--text">ลงทะเบียนกิจกรรม 555555555 </h1>
+          <h1 class="green--text">ลงทะเบียนกิจกรรม 555555555 </h1>
         </v-col>
         <v-form ref="form" v-model="formValid" lazy-validation>
           <v-text-field
