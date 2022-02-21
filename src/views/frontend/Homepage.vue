@@ -12,13 +12,19 @@
           <v-col align="center" justify="center">
             <v-text-field
               label="กรุณาใส่เบอร์มือถือของท่าน"
-              v-model="phoneNumber"
+              v-model="phone"
               :rules="rules"
+              maxLength="10"
               outlined
             ></v-text-field>
           </v-col>
           <v-col align="center" justify="center">
-            <v-btn elevation="2" color="green" class="white--text pa-5" rounded
+            <v-btn
+              @click="checkPhoneNumber()"
+              elevation="2"
+              color="green"
+              class="white--text pa-5"
+              rounded
               >ตกลง</v-btn
             >
           </v-col>
@@ -39,24 +45,47 @@
               >ลงทะเบียน</v-btn
             >
           </v-col>
-          
-
         </v-form>
       </v-col>
     </v-row>
+    <AlartMessage :show="show" :msg="msg" @close="(n) => (show = n)" />
   </v-container>
 </template>
 
 <script>
+import Axios from "../../config/axios";
+import AlartMessage from "../../components/AlertModal.vue";
+
 export default {
+  components: { AlartMessage },
   data: () => ({
-    formValid: true,
-    phoneNumber: null,
+    show: false,
+    msg: "",
+    formValid: false,
+    phone: null,
     rules: [
       (value) => !!value || "กรุณาใส่เบอร์โทรศัพท์",
       (value) => /^(08|06|09)\d{8}$/.test(value) || "เบอร์มือถือไม่ถูกต้อง",
     ],
   }),
+  methods: {
+    async checkPhoneNumber() {
+      if (this.$refs.form.validate()) {
+        await Axios.post("/api/checkPhoneNumber", { phone: this.phone })
+          .then((data) => {
+            if (data.data.status == "fail") {
+              this.show = true;
+              this.msg = data.data.detail;
+              return;
+            }
+            this.$router.push({ path: "/menu" });
+          })
+          .catch((err) => {
+            console.log("err :>> ", err);
+          });
+      }
+    },
+  },
 };
 </script>
 
