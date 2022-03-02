@@ -13,6 +13,9 @@
             v-model="input_1"
             label="รหัสใต้ฝา"
             outlined
+            maxLength="10"
+            :rules="rules"
+            required
           ></v-text-field>
           <v-col align="center" justify="center">
             <v-btn
@@ -52,30 +55,58 @@
           </v-col>
         </v-form>
       </v-col></v-row
-    ></v-container
-  >
+    >
+    <ShowAlert :show="show" :data="data" @close="closeDialog" />
+  </v-container>
 </template>
 
 <script>
+import ShowAlert from "@/components/showAlert";
 import Axios from "../../config/axios";
 export default {
+  components: { ShowAlert },
   data() {
     return {
       formValid: false,
       valid: true,
       example: false,
       input_1: "",
+      show: false,
+      data: {},
+      rules: [
+        (value) => !!value || "กรุณารหัสใต้ฝา",
+        (value) =>
+          (value.length && value.length == 10) || "กรุณากรอกรหัสใต้ฝา 10 หลัก",
+        (value) => /^[0-9]*$$/.test(value) || "รหัสใต้ฝาเป็นตัวเลขเท่านั้น",
+      ],
     };
   },
   methods: {
     async sendCode() {
-      await Axios.post("/api/inputCheck", { input_1: this.input_1 })
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+
+      let getLocalStorage = localStorage.getItem("user");
+      let parseLocalStorage = JSON.parse(getLocalStorage);
+      await Axios.post("/api/inputCheck", {
+        input_1: this.input_1,
+        phone: parseLocalStorage.phone,
+      })
         .then((res) => {
           console.log("res.data :>> ", res.data);
+          this.data = res.data;
+          this.show = true;
         })
         .catch((err) => {
           console.log("err :>> ", err);
         });
+    },
+    closeDialog(data, status) {
+      if (status === "success") {
+        this.$router.push({ path: "/menu" });
+      }
+      this.show = data;
     },
   },
 };

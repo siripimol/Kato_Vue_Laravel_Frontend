@@ -1,27 +1,22 @@
-const { default: axios } = require("axios");
-let instance = axios.create({
+import axios from "axios";
+
+let token = ''
+
+if (localStorage.getItem('token')) {
+    token = localStorage.getItem('token')
+} else {
+    token = ''
+}
+
+
+const authService = axios.create({
+    baseURL: 'http://127.0.0.1:8000/',
     withCredentials: true,
-});
-
-instance.interceptors.request.use(request => {
-    request.headers.common['Accept'] = 'application/json';
-    request.headers.common['Content-Type'] = 'application/json';
-    return request;
-});
-
-instance.interceptors.response.use(
-    response => { return response; },
-    error => {
-        if (error.response.status === 401) {
-            // sessionStorage.removeItem('user');
-            // window.location.reload();
-        }
-
-        return Promise.reject(error);
+    headers: {
+        "Content-type": 'application/json',
+        "Accept": 'application/json',
+        "Authorization": `Bearer ${token}`
     }
-);
-// Axios.defaults.baseURL = "https://app-name-backend-kato.herokuapp.com/api";
-instance.defaults.baseURL = "http://127.0.0.1:8000/";
+})
 
-// export default Axios;
-export default instance;
+export default authService

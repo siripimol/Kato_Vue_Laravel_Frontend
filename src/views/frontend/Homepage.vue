@@ -72,13 +72,17 @@ export default {
     async checkPhoneNumber() {
       if (this.$refs.form.validate()) {
         await Axios.post("/api/checkPhoneNumber", { phone: this.phone })
-          .then((data) => {
-            if (data.data.status == "fail") {
+          .then((res) => {
+            if (res.data.status == "fail") {
               this.show = true;
-              this.msg = data.data.detail;
+              this.msg = res.data.detail;
               return;
+            } else {
+              localStorage.setItem("user", JSON.stringify(res.data.user));
+              localStorage.setItem("token", res.data.token);
+              this.$router.push({ path: "/menu" });
+              this.$router.go();
             }
-            this.$router.push({ path: "/menu" });
           })
           .catch((err) => {
             console.log("err :>> ", err);

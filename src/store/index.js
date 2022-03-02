@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import repository from '../config/repository'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -23,11 +22,7 @@ export default new Vuex.Store({
         },
       },
       actions: {
-        async login({ commit }, user) {
-          await repository.createSession()
-          const { data } = await repository.login(user)
-          commit('SET_USER', data)
-        }
+
       }
     }
   }
