@@ -1,14 +1,10 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
+       <v-col cols="12" align="center" justify="center">
+            <v-img src="@/assets/Head_01.png" max-width="50%"></v-img>
+          </v-col>
       <v-col cols="12" sm="8" md="10">
-        <v-col align="center" justify="center">
-          <v-img
-            src="@/assets/logo.png"
-            max-width="30%"
-            :to="{ name: 'Receipt' }"
-          ></v-img>
-        </v-col>
         <v-col>
           <v-col align="center" justify="center">
             <h1 class="green--text">ประวัติการโหวต</h1> </v-col
@@ -32,14 +28,14 @@
             </v-simple-table>
           </v-card>
           <v-col align="center" justify="center">
-            <v-btn
+             <router-link :to="'/menu'"><v-btn
               elevation="2"
               color="green"
               class="white--text pa-5"
               rounded
-              @click="sendRegister()"
             >ย้อนกลับ</v-btn
-            >
+            >   
+            </router-link>
           </v-col>
         </v-col>
       </v-col>

@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+            <v-img src="@/assets/Head_01.png" max-width="50%"></v-img>
+      </v-col>
       <v-col cols="12" sm="8" md="6">
-        <v-col cols="12" align="center" justify="center">
-          <v-img src="@/assets/logo.png" max-width="30%"></v-img>
-        </v-col>
         <v-col align="center" justify="center">
           <h4 class="green--text">กรุณากรอกรหัสใต้ฝา 10 หลัก</h4>
         </v-col>
@@ -36,13 +36,13 @@
             </h4>
           </v-col>
           <v-col align="center" justify="center">
-            <v-btn
+            <router-link :to="'/menu'"><v-btn
               elevation="2"
               color="grey"
               class="white--text pa-5 mr-4"
               rounded
               >ย้อนกลับ</v-btn
-            >
+            > </router-link>
             <v-btn
               :disabled="!valid"
               elevation="2"
@@ -84,12 +84,10 @@ export default {
   methods: {
     async sendCode() {
       if (!this.$refs.form.validate()) {
-        return;
-      }
-
+        
       let getLocalStorage = localStorage.getItem("user");
       let parseLocalStorage = JSON.parse(getLocalStorage);
-      await Axios.post("/api/inputCheck", {
+      await Axios.post("/api/receipt", {
         input_1: this.input_1,
         phone: parseLocalStorage.phone,
       })
@@ -101,10 +99,28 @@ export default {
         .catch((err) => {
           console.log("err :>> ", err);
         });
-    },
+    }
+      }
+,
     closeDialog(data, status) {
+      console.log("data: ",data)
       if (status === "success") {
-        this.$router.push({ path: "/menu" });
+      this.$swal({
+          title: 'Are you sure?',
+          text: 'You can\'t revert your action',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes Delete it!',
+          cancelButtonText: 'No, Keep it!',
+          showCloseButton: true,
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          if(result.value) {
+            this.$swal('Deleted', 'You successfully deleted this file', 'success')
+          } else {
+            this.$swal('Cancelled', 'Your file is still intact', 'info')
+          }
+        })
       }
       this.show = data;
     },

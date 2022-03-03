@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+            <v-img src="@/assets/Head_01.png" max-width="50%"></v-img>
+      </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-col align="center" justify="center">
           <h1 class="green--text">
@@ -74,9 +77,7 @@ export default {
         await Axios.post("/api/checkPhoneNumber", { phone: this.phone })
           .then((res) => {
             if (res.data.status == "fail") {
-              this.show = true;
-              this.msg = res.data.detail;
-              return;
+              this.$swal('ขออภัยค่ะ', 'เบอร์มือถือนี้ได้ลงทะเบียนแล้ว', 'ตกลง');
             } else {
               localStorage.setItem("user", JSON.stringify(res.data.user));
               localStorage.setItem("token", res.data.token);
@@ -84,8 +85,8 @@ export default {
               this.$router.go();
             }
           })
-          .catch((err) => {
-            console.log("err :>> ", err);
+          .catch(() => {
+              this.$swal('ขออภัยค่ะ', 'เบอร์มือถือนี้ได้ลงทะเบียนแล้ว', 'ตกลง');
           });
       }
     },
@@ -93,4 +94,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+[class^=swal2] {
+    font-family: 'Athiti', sans-serif !important;
+}
+</style>

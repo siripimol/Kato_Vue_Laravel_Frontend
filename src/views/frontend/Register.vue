@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+            <v-img src="@/assets/Head_01.png" max-width="50%"></v-img>
+      </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-col align="center" justify="center">
           <h1 class="green--text">ลงทะเบียนกิจกรรม</h1>
@@ -66,6 +69,42 @@
               ></v-select>
             </v-col>
           </v-row>
+          <v-row>
+             <v-radio-group
+                v-model="dataRegister.gender"
+                row
+              >
+              <v-radio
+                label="ชาย"
+                value="1"
+              ></v-radio>
+              <v-radio
+                label="หญิง"
+                value="2"
+              ></v-radio>
+          </v-radio-group>
+          </v-row>
+            <v-checkbox
+            class="ma-0"
+            v-model="checkboxCondition"
+            :rules="checkRule"
+            ><span
+              @click="showPDPA = true"
+              slot="label"
+              id="checkboxx"
+              style="font-size: 10pt"
+              ><a>เงื่อนไขการลงทะเบียนร่วมกิจกรรม</a>
+            </span></v-checkbox
+          >
+          <v-checkbox class="ma-0" v-model="checkboxRulePlay" :rules="checkRule"
+            ><span
+              @click="showCriteria = true"
+              slot="label"
+              id="checkboxx"
+              style="font-size: 10pt"
+              ><a>กติกาการร่วมสนุก</a>
+            </span>
+          </v-checkbox>
           <v-col align="center" justify="center">
             <v-btn
               :disabled="!valid"
@@ -77,10 +116,17 @@
               >ตกลง</v-btn
             >
           </v-col>
+
         </v-form>
       </v-col></v-row
     >
     <AlartMessage :show="show" :msg="msg" @close="(n) => (show = n)" />
+    <PDPA :showPDPA="showPDPA" @next="closeDialog" @submit="submitPDPA" />
+    <Criteria
+      :showCriteria="showCriteria"
+      @next="closeDialog"
+      @submit="submitPDPA"
+    />
   </v-container>
 </template>
 
@@ -89,13 +135,19 @@ import Axios from "../../config/axios";
 import AlartMessage from "../../components/AlertModal.vue";
 
 export default {
-  components: { AlartMessage },
+  components: { 
+    AlartMessage ,
+    PDPA: () => import("@/components/PDPA.vue"),
+    Criteria: () => import("@/components/Condition.vue"),
+  },
   data() {
     return {
       show: false,
       msg: "",
       formValid: false,
       valid: true,
+      showPDPA: false,
+      showCriteria: false,
       dataRegister: {
         fname: "",
         lname: "",
@@ -104,6 +156,7 @@ export default {
         day: "",
         month: "",
         year: "",
+        gender:""
       },
       monthList: [
         { data: 1, month: "มกราคม" },
@@ -126,7 +179,6 @@ export default {
           (value) => /^(08|06|09)\d{8}$/.test(value) || "เบอร์มือถือไม่ถูกต้อง",
         ],
         email: [
-          (value) => !!value || "กรุณากรอกอีเมล",
           (value) => /.+@.+\..+/.test(value) || "อีเมลไม่ถูกต้อง",
         ],
         date: [(value) => !!value || "กรุณากรอกข้อมูล"],
@@ -136,7 +188,6 @@ export default {
   methods: {
     sendRegister() {
       if (this.$refs.form.validate()) {
-        console.log("this.dataRegister :>> ", this.dataRegister);
         Axios.post("/api/register", this.dataRegister)
           .then((res) => {
             console.log("res :>> ", res.data);
@@ -144,11 +195,24 @@ export default {
               this.$router.push({ path: "/menu" });
             }
           })
-          .catch((err) => {
-            console.log("err :>> ", err);
-            this.msg = "เบอร์มือถือถูกลงทะเบียนแล้ว";
-            this.show = true;
+          .catch(() => {
+           this.$swal({
+              title: '<i>Custom HTML</i>',
+              html:`This is an <em> emaphazied text </em>, <a href="#">links</a><strong>And other tags</strong>`,
+              showCloseButton: true,
+              showCancelButton: true,
+              focusConfirm: false,
+            })
           });
+      }
+    },
+    submitPDPA(value) {
+      if (value.type == "pdpa") {
+        this.checkboxCondition = true;
+        this.showPDPA = false;
+      } else {
+        this.checkboxRulePlay = true;
+        this.showCriteria = false;
       }
     },
   },
