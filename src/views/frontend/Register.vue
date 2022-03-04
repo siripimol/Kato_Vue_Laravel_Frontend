@@ -13,39 +13,40 @@
             label="ชื่อ"
             v-model="dataRegister.fname"
             :rules="rules.name"
-            outlined
+            solo
           ></v-text-field>
           <v-text-field
             label="นามสกุล"
             v-model="dataRegister.lname"
             :rules="rules.name"
-            outlined
+            solo
           ></v-text-field>
           <v-text-field
             label="เบอร์โทรศัพท์"
             v-model="dataRegister.phone"
             :rules="rules.mobile"
-            outlined
+            solo
           ></v-text-field>
           <v-text-field
             label="อีเมล"
             v-model="dataRegister.email"
             :rules="rules.email"
-            outlined
-          ></v-text-field>
-          <v-row>
-            <v-col cols="12" md="4">
+            solo
+          ></v-text-field> 
+          <p color="#018657" >กรุณาระบุวันเกิด</p> 
+          <v-row style="margin-bottom: -60px;">
+            <v-col cols="4" md="4" sm="4">
               <v-select
                 v-model="dataRegister.day"
                 :items="birthDate"
                 :rules="rules.date"
                 label="วันที่"
                 required
-                outlined
+                solo
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="4" md="4"  sm="4">
               <v-select
                 v-model="dataRegister.month"
                 :items="monthList"
@@ -54,18 +55,18 @@
                 :rules="rules.date"
                 label="เดือน"
                 required
-                outlined
+                solo
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="4" md="4"  sm="4">
               <v-select
                 v-model="dataRegister.year"
                 :items="yearDate"
                 :rules="rules.date"
                 label="พ.ศ."
                 required
-                outlined
+                solo
               ></v-select>
             </v-col>
           </v-row>
@@ -74,16 +75,20 @@
                 v-model="dataRegister.gender"
                 row
               >
+              <p  color="#018657" style="margin: 20px;">เพศ</p>
               <v-radio
                 label="ชาย"
                 value="1"
+                color="#018657"
               ></v-radio>
               <v-radio
                 label="หญิง"
                 value="2"
+                color="#018657"
               ></v-radio>
           </v-radio-group>
           </v-row>
+             <v-col align="center" justify="center">
             <v-checkbox
             class="ma-0"
             v-model="checkboxCondition"
@@ -105,6 +110,7 @@
               ><a>กติกาการร่วมสนุก</a>
             </span>
           </v-checkbox>
+           </v-col>
           <v-col align="center" justify="center">
             <v-btn
               :disabled="!valid"
@@ -191,7 +197,8 @@ export default {
         Axios.post("/api/register", this.dataRegister)
           .then((res) => {
             console.log("res :>> ", res.data);
-            if (res.data.success == "success") {
+            if (res.data.status == "success") {
+              localStorage.setItem('phone', res.data.phone)
               this.$router.push({ path: "/menu" });
             }
           })
@@ -228,4 +235,5 @@ export default {
 </script>
 
 <style>
+
 </style>

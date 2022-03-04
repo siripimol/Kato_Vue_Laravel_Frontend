@@ -9,7 +9,7 @@
           <v-col align="center" justify="center">
             <h1 class="green--text">ประวัติการโหวต</h1> </v-col
           ><v-card elevation="2">
-            <v-simple-table>
+            <v-simple-table style="height:500px">
               <template v-slot:default>
                 <thead>
                   <tr>
@@ -19,9 +19,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in desserts" :key="item.name">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.calories }}</td>
+                  <tr v-for="item in item" :key="item.type">
+                    <td class="text-center">{{ item.type }}</td>
+                    <td class="text-center">{{ item.day }}</td>
+                    <td class="text-center">{{ item.time }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -44,7 +45,21 @@
 </template>
 
 <script>
-export default {};
+import Axios from "../../config/axios";
+
+export default {
+     data: function() {
+        return {
+          item: []
+        }
+        },
+        mounted() {
+        let mobile = JSON.parse(localStorage.getItem("phone"))
+        Axios.get("/api/history", {params: {phone: mobile}}).then(response => {
+            this.item = response.data.data_history
+          })
+        }
+};
 </script>
 
 <style>

@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <v-col cols="12" align="center" justify="center">
-            <v-img src="@/assets/Head_01.png" max-width="50%"></v-img>
+      <v-col cols="12" md="7" align="center" justify="center">
+            <v-img src="@/assets/Head_01.png" max-width="100%"></v-img>
       </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-col align="center" justify="center">
@@ -18,7 +18,7 @@
               v-model="phone"
               :rules="rules"
               maxLength="10"
-              outlined
+              solo
             ></v-text-field>
           </v-col>
           <v-col align="center" justify="center">
@@ -77,16 +77,29 @@ export default {
         await Axios.post("/api/checkPhoneNumber", { phone: this.phone })
           .then((res) => {
             if (res.data.status == "fail") {
-              this.$swal('ขออภัยค่ะ', 'เบอร์มือถือนี้ได้ลงทะเบียนแล้ว', 'ตกลง');
+                this.$swal({
+                  title: 'ขออภัยค่ะ',
+                  text: 'เบอร์มือถือนี้ยังไม่ลงทะเบียน',
+                  type: 'warning',
+                  showCancelButton: false,
+                  confirmButtonText: 'ลงทะเบียน',
+                  showCloseButton: false,
+                  showLoaderOnConfirm: true,
+                  confirmButtonColor: '#018657',
+                }).then((result) => {
+                  if(result.value) {
+                       this.$router.push({ path: "/register" });
+                  } 
+                })
             } else {
-              localStorage.setItem("user", JSON.stringify(res.data.user));
+              localStorage.setItem("phone", JSON.stringify(res.data.phone));
               localStorage.setItem("token", res.data.token);
               this.$router.push({ path: "/menu" });
               this.$router.go();
             }
           })
           .catch(() => {
-              this.$swal('ขออภัยค่ะ', 'เบอร์มือถือนี้ได้ลงทะเบียนแล้ว', 'ตกลง');
+              this.$swal('ขออภัยค่ะ', 'ยังไม่ได้ลงทะเบียน กรุณากดลงทะเบียน', 'ตกลง');
           });
       }
     },
